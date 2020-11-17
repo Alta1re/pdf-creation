@@ -1,0 +1,38 @@
+{
+	"name": "pdf-creation",
+	"version": "0.0.1",
+	"description": "REST-API for serving dynamic PDFs",
+	"main": "app.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Alta1re/pdf-creation"
+	},
+	"scripts": {
+		"start": "node dist/app.js",
+		"test": "mocha"
+	},
+	"author": "Sven Hager",
+	"license": "ISC",
+	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"express-validator": "^6.6.1",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^5.10.14",
+		"pdfkit": "^0.11.0"
+	},
+	"devDependencies": {
+		"@types/bcryptjs": "^2.4.2",
+		"@types/body-parser": "^1.19.0",
+		"@types/cors": "^2.8.8",
+		"@types/dotenv": "^8.2.0",
+		"@types/express": "^4.17.9",
+		"@types/express-validator": "^3.0.0",
+		"@types/jsonwebtoken": "^8.5.0",
+		"@types/mongoose": "^5.10.0",
+		"@types/pdfkit": "^0.10.6"
+	}
+}
