@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const errorMiddelware_1 = __importDefault(require("./middelware/errorMiddelware"));
 dotenv_1.default.config();
 const mongoUser = process.env.MONGO_USER;
 const mongoPass = process.env.MONGO_PASS;
@@ -24,12 +25,7 @@ app.use((req, res, next) => {
 });
 app.use(authRoutes);
 app.use(pdfRoutes);
-app.use((error, req, res, next) => {
-    const status = error.statusCode || 500;
-    const message = error.msg;
-    const data = error.data;
-    res.status(status).json({ message: message, data: data });
-});
+app.use(errorMiddelware_1.default);
 mongoose_1.default
     .connect(`mongodb://${mongoUser}:${mongoPass}@server.hager-web.com:27017/${mongoName}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {

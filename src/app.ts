@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
+import errorMiddelware from './middelware/errorMiddelware';
+
 dotenv.config();
 
 const mongoUser = process.env.MONGO_USER;
@@ -32,12 +34,7 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(pdfRoutes);
 
-app.use((error: any, req: any, res: any, next: any) => {
-	const status = error.statusCode || 500;
-	const message = error.msg;
-	const data = error.data;
-	res.status(status).json({ message: message, data: data });
-});
+app.use(errorMiddelware);
 
 mongoose
 	.connect(

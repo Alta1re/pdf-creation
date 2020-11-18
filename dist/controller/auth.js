@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const express_validator_1 = require("express-validator");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const ValidationException_1 = __importDefault(require("../exceptions/ValidationException"));
 const User = require('../models/user');
 exports.signup = (req, res, next) => {
     const errors = express_validator_1.validationResult(req);
@@ -25,7 +26,7 @@ exports.signup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
-    const status = req.body.status;
+    const status = 0;
     bcryptjs_1.default
         .hash(password, 12)
         .then(hashedPw => {
@@ -52,20 +53,21 @@ exports.signup = (req, res, next) => {
 exports.login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
-    const user = yield User.findOne({ email: email });
-    if (!user) {
-        const error = new Error('User not found!');
-        //error.statusCode = 401;
-        //error.data({ message: 'Can´t find user with this email.' });
-        throw error;
+    try {
+        const user = yield User.findOne({ email: email });
+        if (!user) {
+            const error = new ValidationException_1.default(422, 'User not found!');
+            throw error;
+        }
+        const passwordMatch = yield bcryptjs_1.default.compare(password, user.password);
+        if (!passwordMatch) {
+            const error = new ValidationException_1.default(401, 'Password wrong.');
+            throw error;
+        }
+        const token = jsonwebtoken_1.default.sign({ userId: user._id.toString() }, 'mega!super?secure!safety?secret!');
+        res.status(200).json({ token: token, userId: user._id.toString() });
     }
-    const passwordMatch = yield bcryptjs_1.default.compare(password, user.password);
-    if (!passwordMatch) {
-        const error = new Error('Authentication failed!');
-        //error.statusCode = 401;
-        //error.data({ message: 'Password doesn´t match.' });
-        throw error;
+    catch (error) {
+        next(error);
     }
-    const token = jsonwebtoken_1.default.sign({ userId: user._id.toString() }, 'mega!super?secure!safety?secret!');
-    res.status(200).json({ token: token, userId: user._id.toString() });
 });
