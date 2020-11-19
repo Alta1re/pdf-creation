@@ -47,7 +47,7 @@ exports.signup = (req, res, next) => {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
-        next();
+        next(err);
     });
 };
 exports.login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,7 +65,11 @@ exports.login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
             throw error;
         }
         const token = jsonwebtoken_1.default.sign({ userId: user._id.toString() }, 'mega!super?secure!safety?secret!');
-        res.status(200).json({ token: token, userId: user._id.toString() });
+        res.status(200).json({
+            token: token,
+            id: user._id.toString(),
+            name: user.name
+        });
     }
     catch (error) {
         next(error);

@@ -71,7 +71,11 @@ exports.login = async (req: any, res: any, next: NextFunction) => {
 			{ userId: user._id.toString() },
 			'mega!super?secure!safety?secret!'
 		);
-		res.status(200).json({ token: token, userId: user._id.toString() });
+		res.status(200).json({
+			token: token,
+			id: user._id.toString(),
+			name: user.name
+		});
 	} catch (error) {
 		next(error);
 	}
